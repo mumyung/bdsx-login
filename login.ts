@@ -45,7 +45,7 @@ events.playerJoin.on((ev) => {
     loginmenu(ev.player.getNetworkIdentifier());
 })
 
-events.playerLeft.on((ev) => {
+events.playerJoin.on((ev) => {
     bedrockServer.executeCommand(`tag "${ev.player.getName()}" remove login`);
 })
 
