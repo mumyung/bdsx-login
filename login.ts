@@ -22,6 +22,10 @@ import { CANCEL } from "bdsx/common"
 events.packetAfter(MinecraftPacketIds.Login).on((ptr, networkIdentifier, packetId) => {
     loginmenu(networkIdentifier);
 })
+command.register("login", "로그인을 합니다.", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
+    let ni = o.getEntity()?.getNetworkIdentifier();
+    loginmenu(ni);
+}, {});
 
 command.register("로그인", "로그인을 합니다.", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
     let ni = o.getEntity()?.getNetworkIdentifier();
