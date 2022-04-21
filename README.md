@@ -13,4 +13,4 @@
 - 서버를 들어오면 자동으로 로그인 메뉴 창이 열립니다.
 - 로그인을 하지 않으면 채팅이 제한 됩니다
 ```
-![logo](resource/Chat-Restrictions.png)
+![png](resource/Chat-Restrictions.png)
