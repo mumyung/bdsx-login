@@ -18,7 +18,7 @@
 # language
 
 #### [ENGLISH]
-- function (#function)
+- [function](#function)
 
 ## function
 
