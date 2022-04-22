@@ -17,6 +17,7 @@ import { command } from "bdsx/command"
 import { MinecraftPacketIds } from "bdsx/bds/packetids";
 import { CommandPermissionLevel } from "bdsx/bds/command";
 import { CANCEL } from "bdsx/common"
+import { ECDH } from "crypto"
 
 events.packetAfter(MinecraftPacketIds.Login).on((ptr, networkIdentifier, packetId) => {
     loginmenu(networkIdentifier);
@@ -37,6 +38,7 @@ command.register("로그인", "로그인을 합니다.", CommandPermissionLevel.
     }
 }, {});
 
+
 events.packetBefore(MinecraftPacketIds.Text).on((ptr, ni, id) => {
     if (ni.getActor()?.hasTag(`login`)) {
 
@@ -54,6 +56,31 @@ events.playerJoin.on((ev) => {
     bedrockServer.executeCommand(`tag "${ev.player.getName()}" remove login`);
 })
 
+events.packetAfter(MinecraftPacketIds.MovePlayer).on((ev, ni) => {
+    if (ni.getActor()?.hasTag(`login`)) {
+
+    } else {
+        const x = ev.pos.x
+        const y = ev.pos.y - 1
+        const z = ev.pos.z
+        const xtp = Math.floor(x)
+        const ytp = Math.floor(y)
+        const ztp = Math.floor(z);
+
+        bedrockServer.executeCommand(`tp "${ni.getActor()!.getName()}" ${xtp} ${ytp} ${ztp}`)
+        bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c로그인을 해야 움직일 수 있습니다!"}]}`)
+    }})
+
+events.playerAttack.on((ev) => {
+    const player = ev.player
+    let ni = player.getNetworkIdentifier()
+    if (ni.getActor()?.hasTag(`login`)) {
+
+    } else {
+        bedrockServer.executeCommand(`tellraw "${player.getName()}" {"rawtext":[{"text":"§c로그인을 안하면 엔티티를 때릴 수 없습니다"}]}`)
+        return CANCEL;
+    }
+})
 
 async function logins(ni: NetworkIdentifier) {
     const res = await Form.sendTo(ni, {
@@ -222,6 +249,45 @@ async function Deleteaccount(ni: NetworkIdentifier) {
         bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c회원가입 후 시도해주세요!"}]}`)
     }
 }
+
+async function passwordfind(ni: NetworkIdentifier) {
+    const res = await Form.sendTo(ni, {
+        type: "custom_form",
+        title: "§l§e비번 찾기",
+        content: [
+            {
+                type: "input",
+                text: "당신의 아이디를 써주세요!"
+            },
+        ]
+    })
+    if (res === null) return;
+
+    const name = res[0];
+
+    if (ni.getActor()?.hasTag(`signup`)) {
+        if (name != "") {
+            const UserJSON = `../plugins/login/User/${name}.json`
+            !fs.existsSync(UserJSON) ? fs.writeFileSync(UserJSON, JSON.stringify({})) : null;
+            const read = JSON.parse(fs.readFileSync(UserJSON, "utf8"))
+            if (ni.getActor()?.deviceId == read.deviceId) {
+                if (read.playerName === undefined) {
+                    bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c${name}에 대한 정보가 없습니다!"}]}`)
+                    fs.unlinkSync(UserJSON)
+                } else {
+                    bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§a비밀번호: ${read.password}입니다."}]}`)
+                }
+            } else {
+                bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c닉네임을 적어주세요!"}]}`)
+            }
+        } else {
+            bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§cError code 0x00000001"}]}`)
+        }
+    } else {
+        bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c계정의 주인이 당신이 아닙니다."}]}`)
+    }
+}
+
 async function loginmenu(ni: NetworkIdentifier) {
     const res = await Form.sendTo(ni, {
         type: "form",
@@ -236,17 +302,23 @@ async function loginmenu(ni: NetworkIdentifier) {
             },
             {
                 text: "§l§d계정삭제"
+            },
+            {
+                text: "§e§l비번찾기"
             }
         ]
     })
     if (res === null) return;
 
     const login = res;
+    console.log(login)
     if (login == 0) {
         logins(ni);
     } else if (login == 1) {
         signup(ni);
     } else if (login == 2) {
         Deleteaccount(ni)
+    } else if (login == 3) {
+        passwordfind(ni)
     }
 }
