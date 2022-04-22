@@ -295,7 +295,6 @@ async function loginmenu(ni: NetworkIdentifier) {
     if (res === null) return;
 
     const login = res;
-    console.log(login)
     if (login == 0) {
         logins(ni);
     } else if (login == 1) {
