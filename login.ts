@@ -21,7 +21,7 @@ import { CANCEL } from "bdsx/common"
 events.packetAfter(MinecraftPacketIds.Login).on((ptr, networkIdentifier, packetId) => {
     loginmenu(networkIdentifier);
 })
-command.register("login", "로그인을 합니다.", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
+command.register("login", "로그인을 합니다. Made by mumyung1507", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
     const player = o.getEntity();
     if (player?.isPlayer()) {
         let ni = player.getNetworkIdentifier()
@@ -29,7 +29,7 @@ command.register("login", "로그인을 합니다.", CommandPermissionLevel.Norm
     }
 }, {});
 
-command.register("로그인", "로그인을 합니다.", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
+command.register("로그인", "로그인을 합니다. Made by mumyung1507", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
     const player = o.getEntity();
     if (player?.isPlayer()) {
         let ni = player.getNetworkIdentifier()
