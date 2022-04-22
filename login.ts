@@ -55,21 +55,6 @@ events.playerJoin.on((ev) => {
     bedrockServer.executeCommand(`tag "${ev.player.getName()}" remove login`);
 })
 
-events.packetAfter(MinecraftPacketIds.MovePlayer).on((ev, ni) => {
-    if (ni.getActor()?.hasTag(`login`)) {
-
-    } else {
-        const x = ev.pos.x
-        const y = ev.pos.y - 1
-        const z = ev.pos.z
-        const xtp = Math.floor(x)
-        const ytp = Math.floor(y)
-        const ztp = Math.floor(z);
-
-        bedrockServer.executeCommand(`tp "${ni.getActor()!.getName()}" ${xtp} ${ytp} ${ztp}`)
-        bedrockServer.executeCommand(`tellraw "${ni.getActor()!.getName()}" {"rawtext":[{"text":"§c로그인을 해야 움직일 수 있습니다!"}]}`)
-    }})
-
 events.playerAttack.on((ev) => {
     const player = ev.player
     let ni = player.getNetworkIdentifier()
