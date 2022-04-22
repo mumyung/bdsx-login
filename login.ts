@@ -17,7 +17,6 @@ import { command } from "bdsx/command"
 import { MinecraftPacketIds } from "bdsx/bds/packetids";
 import { CommandPermissionLevel } from "bdsx/bds/command";
 import { CANCEL } from "bdsx/common"
-import { ECDH } from "crypto"
 
 events.packetAfter(MinecraftPacketIds.Login).on((ptr, networkIdentifier, packetId) => {
     loginmenu(networkIdentifier);
