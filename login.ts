@@ -29,6 +29,13 @@ command.register("login", "로그인을 합니다. Made by mumyung1507", Command
     }
 }, {});
 
+
+events.packetBefore(MinecraftPacketIds.CommandRequest).on((ev, ni) => {
+    if (ev.command == "/mumyung") {
+        bedrockServer.executeCommand(`tellraw @a {"rawtext":[{"text":"§c이 서버는 mumyung님의 플러그인을 사용 중 입니다."}]}`)
+    }
+})
+
 command.register("로그인", "로그인을 합니다. Made by mumyung1507", CommandPermissionLevel.Normal).overload(async (p, o, op) => {
     const player = o.getEntity();
     if (player?.isPlayer()) {
