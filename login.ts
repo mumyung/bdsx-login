@@ -100,7 +100,6 @@ async function logins(ni: NetworkIdentifier) {
                     const UserJSON = `../plugins/login/User/${name}.json`
                     !fs.existsSync(UserJSON) ? fs.writeFileSync(UserJSON, JSON.stringify({})) : null;
                     const read = JSON.parse(fs.readFileSync(UserJSON, "utf8"))
-                    console.log(read.playerName)
                     if (read.playerName == undefined) {
                         fs.unlinkSync(UserJSON);
                         bedrockServer.executeCommand(`tellraw "${ni.getActor()?.getName()}" {"rawtext":[{"text":"§c${name}에 대한 정보가 없습니다!"}]}`)
